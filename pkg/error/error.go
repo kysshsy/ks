@@ -53,3 +53,8 @@ func (e *Err) Wrap(err error) Error {
 	e.CauseErr = err
 	return e
 }
+
+func (e *Err) UnWrap() Error {
+	e.CauseErr = nil
+	return e
+}
