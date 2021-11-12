@@ -1,8 +1,10 @@
-package error
+package errors
 
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/pkg/errors"
 )
 
 type Error interface {
@@ -50,11 +52,21 @@ func (e *Err) ToJson() string {
 }
 
 func (e *Err) Wrap(err error) Error {
-	e.CauseErr = err
-	return e
+	newE := *e
+	newE.CauseErr = err
+	return &newE
 }
 
-func (e *Err) UnWrap() Error {
-	e.CauseErr = nil
-	return e
+func Equal(e1 *Err, e2 *Err) bool {
+	if e1 == nil || e2 == nil {
+		return false
+	}
+
+	if e1.BusinessCode != e2.BusinessCode {
+		return false
+	}
+
+	return true
 }
+
+var Cause = errors.Cause
