@@ -11,7 +11,7 @@ type Error interface {
 	Error() string
 
 	ToJson() string
-	Wrap(error) Error
+	Wrap(error) error
 }
 
 var _ Error = (*Err)(nil)
@@ -23,7 +23,7 @@ type Err struct {
 	CauseErr     error
 }
 
-func NewErr(httpCode int, code int, msg string) Error {
+func NewErr(httpCode int, code int, msg string) *Err {
 	return &Err{
 		HttpCode:     httpCode,
 		BusinessCode: code,
@@ -51,7 +51,7 @@ func (e *Err) ToJson() string {
 	return string(raw)
 }
 
-func (e *Err) Wrap(err error) Error {
+func (e *Err) Wrap(err error) error {
 	newE := *e
 	newE.CauseErr = err
 	return &newE
@@ -70,3 +70,4 @@ func Equal(e1 *Err, e2 *Err) bool {
 }
 
 var Cause = errors.Cause
+var Wrap = errors.Wrap
